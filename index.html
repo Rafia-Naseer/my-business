@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Slice | Premium Pizza & Burgers</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="logo">URBAN<span>SLICE</span></div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#deals">Deals</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li class="cart-icon" onclick="alert('Opening your Cart...')">
+                    <i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero-pizza">
+        <div class="hero-content">
+            <span class="badge" onclick="showOfferTime()">Limited Time Offer</span>
+            <h1 id="offer-text">Khao Piyo <br><span>Aish Karo!</span></h1>
+            <p>Get the best deals on Pizza and Burgers in town.</p>
+            <div class="hero-btns">
+                <button class="btn-main" onclick="orderNow()">Order Now</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="deals" class="deals-section">
+        <div class="deal-card red" onclick="showDealItems('Buy 1 Get 1')">
+            <h2>Buy 1 Get 1 FREE</h2>
+            <p>On all Large Pizzas every Friday!</p>
+        </div>
+        <div class="deal-card yellow" onclick="showDealItems('Family Feast')">
+            <h2>Family Feast</h2>
+            <p>2 Medium Pizzas + 1.5L cola drink</p>
+        </div>
+    </section>
+
+    <section id="menu" class="menu-section">
+        <h2 class="section-title">Explore Our Menu</h2>
+        <div class="menu-filters">
+            <button onclick="filterMenu('all')" id="btn-all" class="active">All (15)</button>
+            <button onclick="filterMenu('pizza')">Pizzas</button>
+            <button onclick="filterMenu('burger')">Burgers</button>
+            <button onclick="filterMenu('drink')">Pak Drinks</button>
+        </div>
+
+        <div class="menu-container" id="menu-grid">
+            </div>
+    </section>
+
+    <section id="reviews" class="reviews-section" onclick="showAllReviews()">
+        <h2 class="section-title">Customer Reviews</h2>
+        <p>Click here to read what our 10 happy customers say!</p>
+        <div id="reviews-box" class="reviews-container">
+            </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Urban Slice Pakistan. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Data for 15 Items
+        const items = [
+            { name: "Chicken Tikka Pizza", cat: "pizza", price: "1250", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300" },
+            { name: "Fajita Sensation", cat: "pizza", price: "1450", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300" },
+            { name: "Cheese Lover", cat: "pizza", price: "1100", img: "https://www.cheesehouse.com/wp-content/uploads/2020/10/pizza-2.jpg" },
+            { name: "Veggie Max", cat: "pizza", price: "950", img: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=300" },
+            { name: "Beast Pizza", cat: "pizza", price: "1800", img: "https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?w=300" },
+            
+            { name: "Zinger Burger", cat: "burger", price: "450", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300" },
+            { name: "Tower Burger", cat: "burger", price: "650", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=300" },
+            { name: "Beef Jalapeno", cat: "burger", price: "750", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300" },
+            { name: "Grilled Chicken", cat: "burger", price: "500", img: "https://images.unsplash.com/photo-1521305916504-4a1121188589?w=300" },
+            { name: "Classic Patty", cat: "burger", price: "350", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300" },
+            
+            { name: "Pak Cola ", cat: "drink", price: "120", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+            { name: "Ice Drink(Sweet)", cat: "drink", price: "150", img: "https://th.bing.com/th/id/OIP.TevakU55OkM_05ipZ7Nf1wHaDt?w=322&h=175&c=7&r=0&o=7&pid=1.7&rm=3" },
+            { name: "Gourmet Cola", cat: "drink", price: "100", img: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=300" },
+            { name: "Fresh Lime", cat: "drink", price: "180", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=300" },
+            { name: "Rooh Afza", cat: "drink", price: "200", img: "https://tse1.mm.bing.net/th/id/OIP._3IYZzihfN-7daORi0E8sQHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" }
+        ];
+
+        function filterMenu(category) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+            
+            // Filter Logic
+            const filtered = category === 'all' ? items : items.filter(i => i.cat === category);
+            
+            filtered.forEach(item => {
+                grid.innerHTML += `
+                    <div class="menu-item">
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="item-info">
+                            <h3>${item.name}</h3>
+                            <span class="price">${item.price}</span>
+                            <button onclick="addToCart('${item.name}')" class="add-to-cart">+</button>
+                        </div>
+                    </div>`;
+            });
+
+            // Button Active Style
+            document.querySelectorAll('.menu-filters button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function addToCart(name) {
+            let count = document.getElementById('cart-count');
+            count.innerText = parseInt(count.innerText) + 1;
+            alert(name + " added to Cart! 🛒");
+        }
+
+        function showOfferTime() {
+            alert("⏰ Special Offer Ends at 12:00 PM!");
+        }
+
+        function orderNow() {
+            alert("Redirecting to Order Page... Tayyar ho jayein!");
+        }
+
+        function showDealItems(type) {
+            if(type === 'Buy 1 Get 1') {
+                alert("Buy 1 Get 1 Free on: \n1. Chicken Tikka \n2. Fajita \n3. Veggie Max");
+            } else {
+                alert("Family Feast Includes: \n- 2 Medium Pizzas \n- 1 Tower Burger \n- 1.5L Pakola");
+            }
+        }
+
+        function showAllReviews() {
+            const box = document.getElementById('reviews-box');
+            box.innerHTML = "";
+            for(let i=1; i<=10; i++) {
+                box.innerHTML += `<div class="review-card">⭐⭐⭐⭐⭐ <br> <b>Review #${i}:</b> Kamal ka maza hai! Best in Pakistan.</div>`;
+            }
+        }
+
+        // Initialize with All items
+        window.onload = () => filterMenu('all');
+    </script>
+</body>
+</html>
